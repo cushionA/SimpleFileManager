@@ -1,0 +1,10 @@
+diff a/.gitignore b/.gitignore	(rejected hunks)
+@@ -360,4 +360,6 @@
+ .ionide/
+ 
+ # Fody - auto-generated XML schema
+-FodyWeavers.xsd
+\ No newline at end of file
++FodyWeavers.xsd
++/WebApplicationSample
++/MyAtCoderTest

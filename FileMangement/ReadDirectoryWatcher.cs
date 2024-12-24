@@ -300,12 +300,14 @@ namespace FileClassifier
                         // 監視結果情報を取得
                         var notifyInfo = (FILE_NOTIFY_INFORMATION)Marshal.PtrToStructure(ptr, typeof(FILE_NOTIFY_INFORMATION));
 
+                        // 全キャンセルフラグ
+                        bool isCancel = false;
 
                         // 変更の種類が修正（作成フィルタ＆修正フィルタ）ならコントローラーに通知する
                         if ( notifyInfo.Action == FILE_ACTION_MODIFIED )
                         {
                             // 変更を通知。
-                            ReportNewFile(ReturnFilePath(ptr, fileNameOffset, (int)notifyInfo.FileNameLength));
+                            isCancel = ReportNewFile(ReturnFilePath(ptr, fileNameOffset, (int)notifyInfo.FileNameLength));
                         }
                         // 追加の場合は作成されたファイルなのかをチェックしてから報告
                         else if ( notifyInfo.Action == FILE_ACTION_ADDED || notifyInfo.Action == FILE_ACTION_RENAMED_NEW_NAME )
@@ -315,14 +317,14 @@ namespace FileClassifier
                             // 新規作成ファイルなら報告
                             if ( isNewFile(filePath) )
                             {
-                                ReportNewFile(filePath);
+                                isCancel = ReportNewFile(filePath);
                             }
                         }
 
                         //string fPath = ReturnFilePath(ptr, fileNameOffset, (int)notifyInfo.FileNameLength);
 
-                        // 次のエントリがない場合はループを終了
-                        if ( notifyInfo.NextEntryOffset == 0 )
+                        // 次のエントリがない場合、あるいは全キャンセルならループを終了
+                        if ( notifyInfo.NextEntryOffset == 0 || isCancel )
                         {
                             break;
 

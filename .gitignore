@@ -375,6 +375,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 <<<<<<< HEAD
+<<<<<<< HEAD
 FodyWeavers.xsd
 
 # VS Code files for those working on multiple tools
@@ -401,3 +402,6 @@ FodyWeavers.xsd
 FodyWeavers.xsd
 >>>>>>> parent of 3f93aef... コード例で使用しているコードで他ユーザーのライブラリの出典が分かるように編集。
 CodeExample/
+=======
+FodyWeavers.xsd
+>>>>>>> parent of 3f93aef... コード例で使用しているコードで他ユーザーのライブラリの出典が分かるように編集。

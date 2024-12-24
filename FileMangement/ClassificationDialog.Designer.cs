@@ -36,6 +36,7 @@ namespace FileClassifier
             this.labelDescription = new System.Windows.Forms.Label();
             this.labeloriginalFileHeader = new System.Windows.Forms.Label();
             this.labelOriginalFileName = new System.Windows.Forms.Label();
+            this.buttonCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ComboBoxClassify
@@ -104,12 +105,25 @@ namespace FileClassifier
             this.labelOriginalFileName.Size = new System.Drawing.Size(0, 13);
             this.labelOriginalFileName.TabIndex = 5;
             // 
+            // buttonCancel
+            // 
+            this.buttonCancel.Font = new System.Drawing.Font("MS UI Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.buttonCancel.ForeColor = System.Drawing.Color.Black;
+            this.buttonCancel.Location = new System.Drawing.Point(16, 164);
+            this.buttonCancel.Name = "buttonCancel";
+            this.buttonCancel.Size = new System.Drawing.Size(75, 35);
+            this.buttonCancel.TabIndex = 6;
+            this.buttonCancel.Text = "キャンセル";
+            this.buttonCancel.UseVisualStyleBackColor = true;
+            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            // 
             // ClassificationDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(334, 211);
             this.ControlBox = false;
+            this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.labelOriginalFileName);
             this.Controls.Add(this.labeloriginalFileHeader);
             this.Controls.Add(this.labelDescription);
@@ -134,5 +148,6 @@ namespace FileClassifier
         private Label labelDescription;
         private Label labeloriginalFileHeader;
         private Label labelOriginalFileName;
+        private Button buttonCancel;
     }
 }

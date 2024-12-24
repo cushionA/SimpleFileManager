@@ -59,9 +59,10 @@ namespace FileClassifier
             /// 各Watcher側で変更を取得したら呼び出す。
             /// </summary>
             /// <param name="changePath">変更されたファイルのパス</param>
-            protected void ReportNewFile(string changePath)
+            /// <returns>返り値がtrueなら全キャンセル。</returns>
+            protected bool ReportNewFile(string changePath)
             {
-                controller.GetReport(changePath);
+                return controller.GetReport(changePath);
             }
 
         }
@@ -125,8 +126,10 @@ namespace FileClassifier
                 // 新規作成（ダウンロード）以外は弾く
                 if ( e.ChangeType == WatcherChangeTypes.Created )
                 {
-                    ReportNewFile(e.FullPath);
+                    // キャンセルの時、イベントを差し止める？
+                    bool isCancel = ReportNewFile(e.FullPath);
                 }
+
             }
 
             #endregion
@@ -226,7 +229,8 @@ namespace FileClassifier
         /// 監視インスタンスからのファイル変更を受け取るメソッド。
         /// </summary>
         /// <param name="createPath">新規作成されたファイルのパス</param>
-        public void GetReport(string createPath)
+        /// <returns>返り値が真の時全キャンセル。</returns>
+        public bool GetReport(string createPath)
         {
             // 拡張子を取得し、ついでに弾く対象の拡張子であるかを見る。
             FileExtension extension = ClassifyManager.GetExtensionByStr(Path.GetExtension(createPath));
@@ -234,7 +238,7 @@ namespace FileClassifier
             // アプリの対象外拡張子のファイルを監視しない場合は弾く。
             if ( !ClassifyManager.appSetting.CheckIgnoreEx((int)extension) )
             {
-                return;
+                return false;
             }
 
             // 分類画面を表示
@@ -247,7 +251,8 @@ namespace FileClassifier
                 dialog.Location = new System.Drawing.Point(cursorPosition.X, cursorPosition.Y);
 
                 // モーダルで表示
-                dialog.ShowDialog();
+                // 結果がNoであれば全キャンセル
+                return dialog.ShowDialog() == DialogResult.No;
             }
         }
 

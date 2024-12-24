@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace FileClassifier
 {
@@ -26,6 +27,8 @@ namespace FileClassifier
     /// 確認ダイアログを出す
     /// 設定画面を作る
     /// パス生成をブレイク入れて見る
+    /// 
+    /// 結果が No の場合だけ全キャンセル。
     /// 
     /// </summary>
     public partial class ClassificationDialog : Form
@@ -77,8 +80,13 @@ namespace FileClassifier
 
             SetToolTip(ComboBoxClassify, "使用する分類設定を選択する。\r\n分類設定：取得したファイルをどのフォルダに移動させるか、といったファイル整理に使用する設定。");
 
+            SetToolTip(buttonCancel, "分類処理をキャンセルする。");
+
             // 最前面に表示
             this.TopMost = true;
+
+            // 初期値
+            this.DialogResult = DialogResult.OK;
         }
 
         /// <summary>
@@ -119,7 +127,7 @@ namespace FileClassifier
                 MessageBox.Show($"エラー: 有効な設定がありません。\r\n詳細: 設定画面で有効な分類データを作成してください。", "設定エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 // 画面を破棄
-                this.Dispose();
+                this.Close();
                 return;
             }
 
@@ -225,7 +233,7 @@ namespace FileClassifier
             finally
             {
                 // 画面を破棄しないといけないのでここでは普通に例外処理。
-                this.Dispose();
+                this.Close();
             }
         }
 
@@ -289,5 +297,41 @@ namespace FileClassifier
             toolTip.SetToolTip(control, tips);
         }
 
+        /// <summary>
+        /// キャンセル処理。
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonCancel_Click(object sender, System.EventArgs e)
+        {
+            using ( CancelForm cancelDialog = new CancelForm() )
+            {
+                // ボタンの位置に出す。
+                cancelDialog.StartPosition = FormStartPosition.Manual;
+
+                // ボタンの位置を取得
+                Point buttonLocation = buttonCancel.Location;
+                // 親フォームの位置を取得
+                Point parentLocation = this.Location;
+
+                // 新しいフォームの位置を計算
+                cancelDialog.Location = new Point(parentLocation.X + buttonLocation.X, parentLocation.Y + buttonLocation.Y + buttonCancel.Height);
+                cancelDialog.TopMost = true;
+
+                DialogResult result = cancelDialog.ShowDialog();
+
+                // OK以外なら画面を閉じる。
+                if ( result == DialogResult.Yes || result == DialogResult.No )
+                {
+                    this.DialogResult = result;
+                    // キャンセル表示してね
+                    ClassifyManager.MyDialogBox(this, "分類処理をキャンセルしました。", "キャンセル", MessageBoxButtons.OK, icon: MessageBoxIcon.Stop);
+                    this.Close();
+                }
+
+            }
+
+        }
     }
 }
